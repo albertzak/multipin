@@ -1,0 +1,27 @@
+{
+  "name": "Multi Pin",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Select multiple pins to pin on Pinterest",
+  "homepage_url": "http://albertzak.com",
+  "icons": {
+    "256": "icons/icon256.png"
+  },
+  "default_locale": "en",
+  "permissions": [
+    "https://*.pinterest.com/*/*",
+    "http://*.pinterest.com/*/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.pinterest.com/*/*",
+        "http://*.pinterest.com/*/*"
+      ],
+      "js": [
+        "vendor/jquery-2.1.3.min.js",
+        "src/inject/inject.js"
+      ]
+    }
+  ]
+}
