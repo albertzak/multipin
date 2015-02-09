@@ -1,0 +1,55 @@
+.multiPinButton {
+  margin-right: 10px;
+  margin-top: -1px;
+  position: relative;
+  z-index: 1;
+}
+
+.MultiPinBar {
+  bottom: 0;
+  height: 64px;
+  overflow: hidden;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  z-index: 103;
+  top: -64;
+  transform: translate(0px, -64px);
+}
+
+.Module.MultiPinBar,
+.infoBarWrapper {
+  transition-duration: 400ms;  
+}
+
+.MultiPinBar .notifications {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #bd081c;
+  float: left;
+  line-height: 30px;
+  margin-left: 7px;
+  margin-top: 18px;
+  text-shadow: none;
+}
+
+.MultiPinBar .notifications,
+.MultiPinBar .notifications .label, 
+.MultiPinBar .notifications .value, {
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.multiPinButtons {
+  margin-right: 7px;
+  margin-top: 18px;
+  float: right;
+}
+
+.multiPinButtons .Button {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-right: 3px;
+  position: relative;
+  z-index: 1;
+}
