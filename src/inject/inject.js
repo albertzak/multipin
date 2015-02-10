@@ -1,57 +1,92 @@
 chrome.extension.sendMessage({}, function(response) {
 	
   MultiPin = {
-    buttonHtml: '<button class="rounded Button multiPinButton Module hasText btn">Multi Pin</button>',
+    buttonHtml:     '<button class="rounded Button multiPinButton Module hasText btn">Multi Pin</button>',
  
-    barHtml:    '<div class="Module MultiPinBar">'
-              + '  <div class="boardMultiPinBar centeredWithinWrapper">'
-              + '    <div class="notifications">'
-              + '      <div class="Module PinCount ">'
-              + '        <span class="label">Multi Pin: Wähle einige Pins aus!</span>'
-              + '      </div>'
-              + '    </div>'
-              + '    <div class="multiPinButtons">'
-              + '      <button class="Module Button btn rounded primary multiPinActionButton hasText" data-element-type="401" type="button">'
-              + '        <span class="buttonText">Pin them!</span>'
-              + '      </button>'
-              + '      <button class="Module Button btn rounded multiPinCancelButton hasText" data-element-type="404" type="button">'
-              + '        <span class="buttonText">Abbrechen</span>'
-              + '      </button>'
-              + '    </div>'
-              + '  </div>'
-              + '</div>',
+    barHtml:        '<div class="Module MultiPinBar">'
+                  + '  <div class="boardMultiPinBar centeredWithinWrapper">'
+                  + '    <div class="notifications">'
+                  + '      <div class="Module PinCount ">'
+                  + '        <span class="label">Multi Pin: Wähle einige Pins aus!</span>'
+                  + '      </div>'
+                  + '    </div>'
+                  + '    <div class="multiPinButtons">'
+                  + '      <button class="Module Button btn rounded primary multiPinActionButton hasText" data-element-type="401" type="button">'
+                  + '        <span class="buttonText">Pin them!</span>'
+                  + '      </button>'
+                  + '      <button class="Module Button btn rounded multiPinCancelButton hasText" data-element-type="404" type="button">'
+                  + '        <span class="buttonText">Abbrechen</span>'
+                  + '      </button>'
+                  + '    </div>'
+                  + '  </div>'
+                  + '</div>',
+
+    pinWrapperHtml: '<div class="multiPinPinWrapper">'
+                  + '  <button type="button" class="multiPinCheckbox bulkEditCheckbox Button btn rounded Module">'
+                  + '    <em></em>'
+                  + '    <span class="accessibilityText">Multi Pin: Pin auswählen</span>'
+                  + '  </button>'
+                  + '</div>',
 
     init: function() {
       this.movePinsButton = $('.movePinsButton');
-      this.isMultipinnable = (this.movePinsButton.length > 0);
-      if (this.isMultipinnable) { this.injectButton(); }
+      this.isMultiPinnable = (this.movePinsButton.length > 0);
+      if (this.isMultiPinnable) {
+        this.injectButton();
+        this.injectPinWrapper();
+      }
     },
 
     injectButton: function() {
       this.movePinsButton.before(this.buttonHtml);
       this.multiPinButton = $('.multiPinButton');
-      this.multiPinButton.click(this.toggleMultiPinBar);
+      this.multiPinButton.click(this.toggleMultiPinning);
     },
 
-    toggleMultiPinBar: function() {
-      this.isOpen = ($('.Module.MultiPinBar').length > 0);
+    injectPinWrapper: function() {
+      $('.pinWrapper').prepend(MultiPin.pinWrapperHtml);
+      $('.multiPinCheckbox').click(function(e) {
+        $(e.currentTarget).toggleClass('selected');
+      });
+    },
 
-      if (this.isOpen) {
-        $('.Module.MultiPinBar').css('transform', 'translate(0px, -64px)');
-        $('.infoBarWrapper').css('transform', 'translate(0px, 0px)');
-        $('.Module.MultiPinBar').one('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(e){
-          if (e.target === e.currentTarget)
-            $('.Module.MultiPinBar').remove();
-        });
+    toggleMultiPinning: function() {
+      MultiPin.isMultiPinning = ($('.Module.MultiPinBar').length > 0);
+
+      if (MultiPin.isMultiPinning) {
+        MultiPin.hideBar();
+        MultiPin.hideCheckboxes();
       } else {
-        $('.Module.BoardInfoBar').append(MultiPin.barHtml);
-        $('.infoBarWrapper').css('transform', 'translate(0px, 64px)');
-        setTimeout(function() {
-          $('.Module.MultiPinBar').css('transform', 'translate(0px, 0px)');
-        }, 10);
-
-        $('.multiPinCancelButton').click(MultiPin.toggleMultiPinBar);
+        MultiPin.showBar();
+        MultiPin.showCheckboxes();
       }
+    },
+
+    showBar: function() {
+      $('.Module.BoardInfoBar').append(MultiPin.barHtml);
+      $('.infoBarWrapper').css('transform', 'translate(0px, 64px)');
+      setTimeout(function() {
+        $('.Module.MultiPinBar').css('transform', 'translate(0px, 0px)');
+      }, 10);
+      $('.multiPinCancelButton').click(MultiPin.toggleMultiPinning);
+    },
+
+    hideBar: function() {
+      $('.Module.MultiPinBar').css('transform', 'translate(0px, -64px)');
+      $('.infoBarWrapper').css('transform', 'translate(0px, 0px)');
+      $('.Module.MultiPinBar').one('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(e){
+        if (e.target === e.currentTarget)
+          $('.Module.MultiPinBar').remove();
+      });
+    },
+
+    showCheckboxes: function() {
+      $('.Pin').addClass('multiPinMode');
+    },
+
+    hideCheckboxes: function() {
+      $('.Pin').removeClass('multiPinMode');
+      $('.multiPinCheckbox').removeClass('selected');
     },
 
   };

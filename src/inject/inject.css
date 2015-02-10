@@ -1,9 +1,13 @@
+/* Multi Pin Button */
+
 .multiPinButton {
   margin-right: 10px;
   margin-top: -1px;
   position: relative;
   z-index: 1;
 }
+
+/* Multi Pin Bar */
 
 .MultiPinBar {
   bottom: 0;
@@ -52,4 +56,40 @@
   margin-right: 3px;
   position: relative;
   z-index: 1;
+}
+
+/* Pin Wrapper */
+
+.Pin.multiPinMode .multiPinPinWrapper {
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+}
+
+.Pin .multiPinPinWrapper {
+  display: none;
+}
+
+.Pin.summary .likeEditButtonWrapper,
+.Pin.summary .multiPinCheckboxWrapper {
+  right: 8px;
+}
+
+.Pin.multiPinMode .repinSendButtonWrapper,
+.Pin.multiPinMode .likeEditButtonWrapper {
+  display: none;
+}
+
+.Pin.summary .repinSendButtonWrapper {
+  left: 8px;
+}
+
+.Pin.multiPinMode .repinSendButtonWrapper,
+.Pin.multiPinMode .likeEditButtonWrapper {
+   display: none; 
 }
