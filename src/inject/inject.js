@@ -6,8 +6,8 @@ chrome.extension.sendMessage({}, function(response) {
     barHtml:        '<div class="Module MultiPinBar">'
                   + '  <div class="boardMultiPinBar centeredWithinWrapper">'
                   + '    <div class="notifications">'
-                  + '      <div class="Module PinCount ">'
-                  + '        <span class="label">Multi Pin: Wähle einige Pins aus!</span>'
+                  + '      <div class="Module PinCount">'
+                  + '        <span class="label">Select some Pins!</span>'
                   + '      </div>'
                   + '    </div>'
                   + '    <div class="multiPinButtons">'
@@ -15,7 +15,7 @@ chrome.extension.sendMessage({}, function(response) {
                   + '        <span class="buttonText">Pin them!</span>'
                   + '      </button>'
                   + '      <button class="Module Button btn rounded multiPinCancelButton hasText" data-element-type="404" type="button">'
-                  + '        <span class="buttonText">Abbrechen</span>'
+                  + '        <span class="buttonText">Cancel</span>'
                   + '      </button>'
                   + '    </div>'
                   + '  </div>'
@@ -24,7 +24,7 @@ chrome.extension.sendMessage({}, function(response) {
     pinWrapperHtml: '<div class="multiPinPinWrapper">'
                   + '  <button type="button" class="multiPinCheckbox bulkEditCheckbox Button btn rounded Module">'
                   + '    <em></em>'
-                  + '    <span class="accessibilityText">Multi Pin: Pin auswählen</span>'
+                  + '    <span class="accessibilityText">Multi Pin: Select Pin</span>'
                   + '  </button>'
                   + '</div>',
 
