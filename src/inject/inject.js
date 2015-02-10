@@ -47,7 +47,21 @@ chrome.extension.sendMessage({}, function(response) {
       $('.pinWrapper').prepend(MultiPin.pinWrapperHtml);
       $('.multiPinCheckbox').click(function(e) {
         $(e.currentTarget).toggleClass('selected');
+        MultiPin.updateSelectedCount();
       });
+    },
+
+    updateSelectedCount: function() {
+      var count = $('.multiPinCheckbox.selected').length;
+
+      if (count === 0)
+        var text = 'Select some Pins!';
+      if (count === 1)
+        var text = '1 Pin selected';
+      if (count > 1)
+        var text = count + ' Pins selected';
+
+      $('.PinCount .label').text(text);
     },
 
     toggleMultiPinning: function() {
