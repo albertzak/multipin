@@ -5,7 +5,7 @@ MultiPin = {
                 + '  <div class="boardMultiPinBar centeredWithinWrapper">'
                 + '    <div class="notifications">'
                 + '      <div class="Module PinCount">'
-                + '        <span class="label">Select some Pins!</span>'
+                +          P._("<span class='label'>Select some Pins!</span>")
                 + '      </div>'
                 + '    </div>'
                 + '    <div class="multiPinButtons">'
@@ -13,7 +13,7 @@ MultiPin = {
                 + '        <span class="buttonText">Pin them!</span>'
                 + '      </button>'
                 + '      <button class="Module Button btn rounded multiPinCancelButton hasText" data-element-type="404" type="button">'
-                + '        <span class="buttonText">Cancel</span>'
+                + '        <span class="buttonText">' + P._('Cancel') + '</span>'
                 + '      </button>'
                 + '    </div>'
                 + '  </div>'
@@ -53,11 +53,11 @@ MultiPin = {
     var count = $('.multiPinCheckbox.selected').length;
 
     if (count === 0)
-      var text = 'Select some Pins!';
+      var text = $(P._("<span class='label'>Select some Pins!</span>")).text();
     if (count === 1)
-      var text = '1 Pin selected';
+      var text = '1 Pin ' + P._('Selected');
     if (count > 1)
-      var text = count + ' Pins selected';
+      var text = count + ' Pins ' + P._('Selected');
 
     $('.PinCount .label').text(text);
   },
@@ -93,6 +93,8 @@ MultiPin = {
     });
   },
 
+
+
   showCheckboxes: function() {
     $('.Pin').addClass('multiPinMode');
   },
@@ -104,8 +106,7 @@ MultiPin = {
 
   pinThem: function() {
     var count = $('.multiPinCheckbox.selected').length;
-
-    $('body').append('<script>console.log(PINS_TAB);</script>');
+    if (count === 0) { P.showError(P._('Select some Pins first.')); return; }
 
     console.log('Pinning', count, 'Pins');
   }
