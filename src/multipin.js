@@ -33,11 +33,10 @@ MultiPin = {
 
   initialize: function() {
     if (MultiPin.isInitializable() && ! MultiPin.isInitialized()) {
-      console.log('MultiPin: Initializing');
       MultiPin.injectButton();
       MultiPin.injectPinWrapper('.Pin');
       MultiPin.initInfiniteScrollListener();
-      MultiPin.clearRequests();
+      MultiPin.clear();
     }
   },
 
@@ -57,6 +56,7 @@ MultiPin = {
     if (path === '/') { return false; }
     else if (path.indexOf('/pin') === 0) { return false; }
     else if (/^\/.*\/.*\/$/.test(path)) { return true; } // path: /username/board/
+    else if (/^\/.*\/$/.test(path)) { return false; } // path: /username/
     else { console.warn('MultiPin: Unknown Path', path); return false; }
   },
 
@@ -98,36 +98,35 @@ MultiPin = {
   injectPinWrapper: function(parentElem) {
     var parentElem = $(parentElem);
     
-    if (! parentElem.children('.multiPinPinWrapper').length > 0) {
-      parentElem.children('.pinWrapper').prepend(MultiPin.pinWrapperHtml);
-      parentElem.children('.pinWrapper').click(function(e) {
-        if (MultiPin.isMultiPinning()) {
-          $(e.currentTarget).find('.multiPinCheckbox').toggleClass('selected');
-          MultiPin.updateSelectedCount();
-        }
-      });
+    if (parentElem.find('.multiPinPinWrapper').length === 0) {
+      parentElem.find('.pinWrapper').prepend(MultiPin.pinWrapperHtml);
+      parentElem.find('.pinWrapper').click(function(e) { MultiPin.togglePin(e.currentTarget); });
     }
 
     if (MultiPin.isMultiPinning())
       MultiPin.showCheckboxes();
   },
 
-  // http://davidwalsh.name/detect-node-insertion
-  initInfiniteScrollListener: function() {
-    var insertListener = function(e){
-      if (e.animationName === 'nodeInserted') {
-        if (! MultiPin.isInitialized())
-          MultiPin.initialize();
-        MultiPin.injectPinWrapper(e.target);
-      }
-    };
+  selectedPins: {},
 
-    document.addEventListener('animationstart', insertListener, false);
-    document.addEventListener('webkitAnimationStart', insertListener, false);
+  togglePin: function(clickedElem) {
+    if (! MultiPin.isMultiPinning()) { return; }
+    var pinElem = $(clickedElem).parents('.Pin');
+    var attributes = MultiPin.getPinAttributes(pinElem);
+
+    if (MultiPin.selectedPins[attributes.pinId]) {
+      pinElem.find('.multiPinCheckbox').removeClass('selected');
+      delete MultiPin.selectedPins[attributes.pinId];
+    } else {
+      pinElem.find('.multiPinCheckbox').addClass('selected');
+      MultiPin.selectedPins[attributes.pinId] = attributes;
+    }
+
+    MultiPin.updateSelectedCount();
   },
 
   updateSelectedCount: function() {
-    var count = $('.multiPinCheckbox.selected').length;
+    var count = Object.keys(MultiPin.selectedPins).length;
 
     if (count === 0)
       var text = $(P._("<span class='label'>Select some Pins!</span>")).text();
@@ -144,6 +143,20 @@ MultiPin = {
 
   isMultiPinning: function() {
     return ($('.Module.MultiPinBar').length > 0);
+  },
+
+  // http://davidwalsh.name/detect-node-insertion
+  initInfiniteScrollListener: function() {
+    var insertListener = function(e){
+      if (e.animationName === 'nodeInserted') {
+        if (! MultiPin.isInitialized())
+          MultiPin.initialize();
+        MultiPin.injectPinWrapper(e.target);
+      }
+    };
+
+    document.addEventListener('animationstart', insertListener, false);
+    document.addEventListener('webkitAnimationStart', insertListener, false);
   },
 
   toggleMultiPinning: function() {
@@ -186,8 +199,16 @@ MultiPin = {
     $('.multiPinCheckbox').removeClass('selected');
   },
 
+  getPinAttributes: function(elem) {
+    return {
+      description: MultiPin.trim($(elem).find('.pinDescription').text()),
+      pinId: MultiPin.trim($(elem).find('a.pinImageWrapper').attr('href').replace('/pin/', '').replace('/', '')),
+      sourceUrl: window.location.pathname
+    };
+  },
+
   pinThem: function() {
-    var count = $('.multiPinCheckbox.selected').length;
+    var count = Object.keys(MultiPin.selectedPins).length;
     if (count === 0) { P.showError(P._('Select some Pins first.')); return; }
     if (count > 50)  { P.showError(P._('You can only move 50 Pins at a time.')); return; };
 
@@ -201,26 +222,13 @@ MultiPin = {
 
       MultiPin.startProgress('Pinning ' + count + ' pins...');
 
-      $('.multiPinCheckbox.selected').each(function(i, el) {
-        var pinElement = $(el).parents('.Pin');
-
-        var options = {
-          description: MultiPin.trim(pinElement.find('.pinDescription').text()),
-          pinId: MultiPin.trim(pinElement.find('a.pinImageWrapper').attr('href').replace('/pin/', '').replace('/', '')),
-          boardId: boardId,
-          sourceUrl: window.location.pathname,
-        };
-
-        MultiPin.pinIt(options);
+      $.each(MultiPin.selectedPins, function(pinId) {
+        var attributes = MultiPin.selectedPins[pinId];
+        attributes.boardId = boardId;
+        MultiPin.pinIt(attributes);
       });
 
     });
-  },
-
-  clearRequests: function() {
-    MultiPin.requests = [];
-    MultiPin.requestsSuccess = [];
-    MultiPin.requestsError = [];
   },
 
   pinIt: function(options) {
@@ -248,10 +256,11 @@ MultiPin = {
         'context': {}
       },
       success: function() { MultiPin.requestsSuccess.push(options); },
-      error: function() { MultiPin.requestsError.push(options); console.log('MultiPin: Error', options); },
+      error: function() { MultiPin.requestsError.push(options); console.warn('MultiPin: Error', options); },
     });
   },
 
+  // TODO: Oh my.
   getBoardIdfromName: function(name) {
     var boards = {};
     var js = $('#jsInit').html();
@@ -279,7 +288,7 @@ MultiPin = {
     var id = boards[name];
 
     if (typeof id === 'undefined')
-      { e = "Couldn't find board"; P.showError(P._(e)); throw e; }
+      { e = "Sorry! Multi Pin doesn't work if you just created a new board. Please refresh this page and try again."; P.showError(P._(e)); throw e; }
 
     return id;
   },
@@ -341,7 +350,7 @@ MultiPin = {
     // TODO: if current path is target board then refresh
     clearInterval(MultiPin.progressPoll);
 
-    MultiPin.clearRequests();
+    MultiPin.clear();
 
     $('.PinForm .savePinButton').off().removeClass('disabled').text(P._('Okay')).click(function() {
       MultiPin.dismissBoardPicker();
@@ -356,6 +365,13 @@ MultiPin = {
 
   updateProgress: function(status) {
     $('.multiPinStatus').text(status);
+  },
+
+  clear: function() {
+    MultiPin.selectedPins = {};
+    MultiPin.requests = [];
+    MultiPin.requestsSuccess = [];
+    MultiPin.requestsError = [];
   },
 
   trim: function(str) {
