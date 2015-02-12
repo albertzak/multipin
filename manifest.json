@@ -1,11 +1,11 @@
 {
   "name": "Multi Pin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "manifest_version": 2,
   "description": "Select multiple pins to pin on Pinterest",
   "homepage_url": "http://albertzak.com",
   "icons": {
-    "256": "icons/icon256.png"
+    "128": "icons/icon128.png"
   },
   "default_locale": "en",
   "permissions": [
