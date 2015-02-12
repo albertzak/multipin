@@ -88,3 +88,23 @@
 .Pin.multiPinMode .likeEditButtonWrapper {
    display: none; 
 }
+
+/* Infinite Scroll -- Detect DOM node insertion */
+/* http://davidwalsh.name/detect-node-insertion */
+@-webkit-keyframes nodeInserted {  
+  from { opacity: 0.99; }
+  to { opacity: 1; }  
+}
+
+
+@keyframes nodeInserted {  
+  from { opacity: 0.99; }
+  to { opacity: 1; }  
+}
+
+.GridItems .Pin {
+    -webkit-animation-duration: 0.001s;
+    -webkit-animation-name: nodeInserted;
+    animation-duration: 0.001s;
+    animation-name: nodeInserted;
+}
