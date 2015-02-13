@@ -33,6 +33,7 @@ MultiPin = {
 
   initialize: function() {
     if (MultiPin.isInitializable() && ! MultiPin.isInitialized()) {
+      MultiPin.cacheBoardIds();
       MultiPin.injectButton();
       MultiPin.injectPinWrapper('.Pin');
       MultiPin.initInfiniteScrollListener();
@@ -261,7 +262,7 @@ MultiPin = {
   },
 
   // TODO: Oh my.
-  getBoardIdfromName: function(name) {
+  cacheBoardIds: function() {
     var boards = {};
     var js = $('#jsInit').html();
 
@@ -276,18 +277,19 @@ MultiPin = {
     }
 
     if (typeof js.all_boards === 'undefined')
-      { e = "Couldn't find list of boards"; P.showError(P._(e)); throw e; }
-
-    if (js.all_boards.length === 0)
-      { e = "You don't have any boards"; P.showError(P._(e)); throw e; }
+      { e = "Couldn't find list of boards. "; P.showError(P._(e)); throw e; }
 
     js.all_boards.forEach(function(board) {
       boards[board.name] = board.id;
     });
 
-    var id = boards[name];
+    MultiPin.boards = boards;
+  },
 
-    if (typeof id === 'undefined')
+  getBoardIdfromName: function(name) {
+    var id = MultiPin.boards[name];
+
+    if ((Object.keys(MultiPin.boards).length === 0) || (typeof id === 'undefined'))
       { e = "Sorry! Multi Pin doesn't work if you just created a new board. Please refresh this page and try again."; P.showError(P._(e)); throw e; }
 
     return id;
