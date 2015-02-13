@@ -136,6 +136,9 @@ MultiPin = {
     if (count > 1)
       var text = count + ' Pins ' + P._('Selected');
 
+    if (count > 100)
+      P.showError(P._("You can only move 50 Pins at a time.").replace('50', '100'));
+
     $('.PinCount .label').text(text);
   },
 
@@ -208,6 +211,7 @@ MultiPin = {
   pinThem: function() {
     var count = Object.keys(MultiPin.selectedPins).length;
     if (count === 0) { P.showError(P._('Select some Pins first.')); return; }
+    if (count > 100)  { P.showError(P._('You can only move 50 Pins at a time.').replace('50', '100')); return; };
 
     if (count === 1)
       var title = '1 Pin ' + P._('Selected');
@@ -332,7 +336,7 @@ MultiPin = {
         var status = 'Yay! Pinned ' + success + ' Pins';
         MultiPin.finishProgress(true);
       } else if ((success + error) === all && error > 0) {
-        var status = "Oops! Something happened and I couldn't pin " + error + " Pins";
+        var status = "Oops! Something happened and I couldn't pin " + error + " Pins. Try again in a little while.";
         MultiPin.finishProgress(false);
       } else if (success === 0) {
         var status = 'Pinning ' + all + ' Pins...';
@@ -348,12 +352,14 @@ MultiPin = {
     // TODO: if current path is target board then refresh
     clearInterval(MultiPin.progressPoll);
 
-    MultiPin.clear();
+    MultiPin.clear(true);
 
     $('.PinForm .savePinButton').off().removeClass('disabled').text(P._('Okay')).click(function() {
       MultiPin.dismissBoardPicker();
-      if (success)
+      if (success) {
+        MultiPin.clear();
         MultiPin.toggleMultiPinning();
+      }
     });
   },
 
@@ -365,11 +371,12 @@ MultiPin = {
     $('.multiPinStatus').text(status);
   },
 
-  clear: function() {
-    MultiPin.selectedPins = {};
+  clear: function(keepSelection) {
     MultiPin.requests = [];
     MultiPin.requestsSuccess = [];
     MultiPin.requestsError = [];
+    if (! keepSelection)
+      MultiPin.selectedPins = {};
   },
 
   trim: function(str) {
