@@ -136,9 +136,6 @@ MultiPin = {
     if (count > 1)
       var text = count + ' Pins ' + P._('Selected');
 
-    if (count > 50)
-      P.showError(P._("You can only move 50 Pins at a time."));
-
     $('.PinCount .label').text(text);
   },
 
@@ -211,7 +208,6 @@ MultiPin = {
   pinThem: function() {
     var count = Object.keys(MultiPin.selectedPins).length;
     if (count === 0) { P.showError(P._('Select some Pins first.')); return; }
-    if (count > 50)  { P.showError(P._('You can only move 50 Pins at a time.')); return; };
 
     if (count === 1)
       var title = '1 Pin ' + P._('Selected');
