@@ -302,7 +302,7 @@ MultiPin = {
       P.getModalManager().showInModal(module);
 
       var uglyHack = setInterval(function() {
-        if ($('.PinForm').length === 0) { return; }
+        if ($('.PinForm .savePinButton').length === 0) { return; }
 
         clearInterval(uglyHack);
 
@@ -311,6 +311,7 @@ MultiPin = {
         $('.PinForm li.boardWrapper').siblings().remove()
         $('.PinForm .socialShareWrapper').remove();
         $('.PinForm .ui-PinPreview').remove();
+        $('.PinForm .PinPreview').remove();
 
         $('.PinForm .savePinButton').click(function(e) {
           e.preventDefault();
