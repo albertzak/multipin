@@ -5,7 +5,7 @@ MultiPin = {
                 + '  <div class="boardMultiPinBar centeredWithinWrapper">'
                 + '    <div class="notifications">'
                 + '      <div class="Module PinCount">'
-                +          P._("<span class='label'>Select some Pins!</span>")
+                +          P.i18n._("<span class='label'>Select some Pins!</span>")
                 + '      </div>'
                 + '    </div>'
                 + '    <div class="multiPinButtons">'
@@ -13,7 +13,7 @@ MultiPin = {
                 + '        <span class="buttonText">Pin them!</span>'
                 + '      </button>'
                 + '      <button class="Module Button btn rounded multiPinCancelButton hasText" data-element-type="404" type="button">'
-                + '        <span class="buttonText">' + P._('Cancel') + '</span>'
+                + '        <span class="buttonText">' + P.i18n._('Cancel') + '</span>'
                 + '      </button>'
                 + '    </div>'
                 + '  </div>'
@@ -130,14 +130,14 @@ MultiPin = {
     var count = Object.keys(MultiPin.selectedPins).length;
 
     if (count === 0)
-      var text = $(P._("<span class='label'>Select some Pins!</span>")).text();
+      var text = $(P.i18n._("<span class='label'>Select some Pins!</span>")).text();
     if (count === 1)
-      var text = '1 Pin ' + P._('Selected');
+      var text = '1 Pin ' + P.i18n._('Selected');
     if (count > 1)
-      var text = count + ' Pins ' + P._('Selected');
+      var text = count + ' Pins ' + P.i18n._('Selected');
 
     if (count > 100)
-      P.showError(P._("You can only move 50 Pins at a time.").replace('50', '100'));
+      P.showError(P.i18n._("You can only move 50 Pins at a time.").replace('50', '100'));
 
     $('.PinCount .label').text(text);
   },
@@ -210,13 +210,13 @@ MultiPin = {
 
   pinThem: function() {
     var count = Object.keys(MultiPin.selectedPins).length;
-    if (count === 0) { P.showError(P._('Select some Pins first.')); return; }
-    if (count > 100)  { P.showError(P._('You can only move 50 Pins at a time.').replace('50', '100')); return; };
+    if (count === 0) { P.showError(P.i18n._('Select some Pins first.')); return; }
+    if (count > 100)  { P.showError(P.i18n._('You can only move 50 Pins at a time.').replace('50', '100')); return; };
 
     if (count === 1)
-      var title = '1 Pin ' + P._('Selected');
+      var title = '1 Pin ' + P.i18n._('Selected');
     if (count > 1)
-      var title = count + ' Pins ' + P._('Selected');
+      var title = count + ' Pins ' + P.i18n._('Selected');
 
     MultiPin.showBoardPicker(title, function(board) {
       var boardId = MultiPin.getBoardIdfromName(board);
@@ -273,11 +273,11 @@ MultiPin = {
     try {
       js = JSON.parse(js);
     } catch(e) {
-      { m = "Couldn't understand list of boards"; P.showError(P._(m)); throw e; }
+      { m = "Couldn't understand list of boards"; P.showError(P.i18n._(m)); throw e; }
     }
 
     if (typeof js.all_boards === 'undefined')
-      { e = "Couldn't find list of boards. "; P.showError(P._(e)); throw e; }
+      { e = "Couldn't find list of boards. "; P.showError(P.i18n._(e)); throw e; }
 
     js.all_boards.forEach(function(board) {
       boards[board.name] = board.id;
@@ -290,7 +290,7 @@ MultiPin = {
     var id = MultiPin.boards[name];
 
     if ((Object.keys(MultiPin.boards).length === 0) || (typeof id === 'undefined'))
-      { e = "Sorry! Multi Pin doesn't work if you just created a new board. Please refresh this page and try again."; P.showError(P._(e)); throw e; }
+      { e = "Sorry! Multi Pin doesn't work if you just created a new board. Please refresh this page and try again."; P.showError(P.i18n._(e)); throw e; }
 
     return id;
   },
@@ -355,7 +355,7 @@ MultiPin = {
 
     MultiPin.clear(true);
 
-    $('.PinForm .savePinButton').off().removeClass('disabled').text(P._('Okay')).click(function() {
+    $('.PinForm .savePinButton').off().removeClass('disabled').text(P.i18n._('Okay')).click(function() {
       MultiPin.dismissBoardPicker();
       if (success) {
         MultiPin.clear();
