@@ -98,7 +98,7 @@ MultiPin = {
 
   injectPinWrapper: function(parentElem) {
     var parentElem = $(parentElem);
-    
+
     if (parentElem.find('.multiPinPinWrapper').length === 0) {
       parentElem.find('.pinWrapper').prepend(MultiPin.pinWrapperHtml);
       parentElem.find('.pinWrapper').click(function(e) { MultiPin.togglePin(e.currentTarget); });
@@ -238,7 +238,7 @@ MultiPin = {
     jQuery.ajax('https://www.pinterest.com/resource/RepinResource/create/', {
       headers: {
         'Accept': 'application/json, text/javascript, */*; q=0.01',
-        'X-APP-VERSION': P.CONTEXT.app_version,
+        'X-APP-VERSION': P.AppVersion.currentVersion,
         'X-CSRFToken': P.csrf.getCSRFToken(),
         'X-NEW-APP': 1,
         'X-Pinterest-AppState': 'active'
@@ -269,7 +269,7 @@ MultiPin = {
     js = js.substr( js.indexOf('"all_boards"'));
     js = js.substr( 0, js.indexOf('}]') + 2);
     js = '{' + js + '}';
-    
+
     try {
       js = JSON.parse(js);
     } catch(e) {
@@ -296,10 +296,10 @@ MultiPin = {
   },
 
   showBoardPicker: function(title, callback) {
-    P.loadModule({
+    P.moduleFactory.load({
       name: 'PinForm'
     }).then(function (module) {
-      P.getModalManager().showInModal(module);
+      P.modalManager.get().showInModal(module);
 
       var uglyHack = setInterval(function() {
         if ($('.PinForm .savePinButton').length === 0) { return; }
@@ -381,7 +381,7 @@ MultiPin = {
   },
 
   trim: function(str) {
-    return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');    
+    return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
   }
 
 };

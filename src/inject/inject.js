@@ -3,6 +3,8 @@ chrome.extension.sendMessage({}, function(response) {
     if (document.readyState === "complete" || document.readyState === "interactive") {
     	clearInterval(readyStateCheckInterval);
 
+      console.log('MultiPin enabled');
+
       var script = document.createElement('script');
       script.src = chrome.extension.getURL('src/multipin.js');
       script.onload = function() {
